@@ -17,13 +17,16 @@ fn main() {
     let payer_keypair = read_keypair_file(Path::new("/Users/stefan/mango/code/solana_configure_local_cluster/validator_1/identity.json")).unwrap();
     let last_blockhash = rpc_client.get_latest_blockhash().unwrap();
 
-    let am = AccountMeta::new(Pubkey::from_str("SysvarLastRestartS1ot1111111111111111111111").unwrap(), false);
+    // note: there are two ways to use sysvar: 1. by explicitly specifying the sysvar account 2. using no account but FooSysvar::get()
+    let _sysvar_account = AccountMeta::new(Pubkey::from_str("SysvarLastRestartS1ot1111111111111111111111").unwrap(), false);
 
     let program_id = Pubkey::from_str("3dCHNiByP1xvPQXDSNyhwggdKp15HPbChLnKAcaHPYth").unwrap();
 
     // sysvar program deployed to local cluster (solana_configure_local_cluster)
     // /Users/stefan/mango/code/solana-program-library/examples/rust/sysvar
-    let instructions = vec![Instruction::new_with_bincode(program_id, &(), vec![])];
+    let instructions = vec![
+        Instruction::new_with_bincode(program_id, &(), vec![])
+    ];
 
     let transaction = Transaction::new_signed_with_payer(
         &instructions,
