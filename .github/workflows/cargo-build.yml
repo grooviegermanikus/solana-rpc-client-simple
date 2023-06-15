@@ -1,8 +1,9 @@
 on:
   schedule:
     - cron:  '30 5,17 * * *'
+  workflow_dispatch:
 
-name: CI
+name: Run Cargo build
 
 jobs:
   build_and_test:
