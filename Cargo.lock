@@ -3502,6 +3502,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "rpc-client"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "clap 3.2.25",
+ "dotenv",
+ "env_logger 0.8.4",
+ "futures 0.3.28",
+ "itertools",
+ "log",
+ "ordered-float",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "solana-rpc",
+ "solana-rpc-client",
+ "solana-sdk",
+ "url 2.3.1",
+]
+
+[[package]]
 name = "rtoolbox"
 version = "0.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4785,27 +4806,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "solana-rpc-client-simple"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "clap 3.2.25",
- "dotenv",
- "env_logger 0.8.4",
- "futures 0.3.28",
- "itertools",
- "log",
- "ordered-float",
- "reqwest",
- "serde",
- "serde_json",
- "solana-rpc",
- "solana-rpc-client",
- "solana-sdk",
- "url 2.3.1",
-]
-
-[[package]]
 name = "solana-runtime"
 version = "1.15.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5456,6 +5456,14 @@ dependencies = [
  "libc",
  "thiserror",
  "walkdir",
+]
+
+[[package]]
+name = "sysvar-restart-slot-tester"
+version = "0.1.0"
+dependencies = [
+ "solana-rpc-client",
+ "solana-sdk",
 ]
 
 [[package]]

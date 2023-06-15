@@ -1,0 +1,15 @@
+[package]
+name = "sysvar-restart-slot-tester"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rpc-client =  { path = "../rpc-client" }
+solana-sdk = "1.15.2"
+solana-rpc-client = "1.15.2"
+
+
+
+
+
+
