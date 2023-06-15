@@ -4,9 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-rpc-client =  { path = "../rpc-client" }
-solana-sdk = "1.15.2"
-solana-rpc-client = "1.15.2"
+rpc-client-wrapper =  { path = "../rpc-client-wrapper" }
+solana-sdk = { git = "https://github.com/blockworks-foundation/solana", version = "=1.14.18" }
+# renamed to solana-rpc-client
+solana-client = "=1.14.18"
 
 
 

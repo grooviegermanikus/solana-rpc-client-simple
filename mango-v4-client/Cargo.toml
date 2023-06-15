@@ -1,0 +1,43 @@
+[package]
+name = "mango-v4-arbi-bot"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "arbi-bot"
+path = "src/main.rs"
+
+[dependencies]
+solana-client = "=1.14.17"
+solana-sdk = "=1.14.17"
+anchor-client = { git = "https://github.com/blockworks-foundation/anchor.git", branch = "v0.27.0-solana-v1.14.19" }
+anchor-lang = { git = "https://github.com/blockworks-foundation/anchor.git", branch = "v0.27.0-solana-v1.14.19" }
+anchor-spl = { git = "https://github.com/blockworks-foundation/anchor.git", branch = "v0.27.0-solana-v1.14.19" }
+mango-v4 = { git = "https://github.com/blockworks-foundation/mango-v4.git", rev = "program-v0.15.0", features = ["client"] }
+pyth-sdk-solana = "0.1.0"
+
+anyhow = "1.0"
+clap = { version = "3.1.8", features = ["derive", "env"] }
+dotenv = "0.15.0"
+env_logger = "0.8.4"
+fixed = { version = "1.11.0", features = ["serde", "borsh"] }
+futures = "0.3.21"
+log = "0.4.0"
+#serum_dex = { git = "https://github.com/openbook-dex/program.git", rev = "v0.5.10", default-features=false, features = ["no-entrypoint", "program"] }
+
+jsonrpc-core = "18.0.0"
+jsonrpc-core-client = { version = "18.0.0", features = ["ws", "http", "tls"] }
+
+tokio = { version = "1.14.1", features = ["rt-multi-thread", "time", "macros", "sync"] }
+tokio-tungstenite = { version = "0.17.2", features = ["native-tls"] }
+
+serde = { version = "1.0.122", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4.24", features = ["serde"] }
+stream-reconnect = "0.3.4"
+itertools = "0.10.5"
+ordered-float = "3.7.0"
+url = "2.3.1"
+reqwest = { version = "0.11.17", features = ["json"] }
+
+

@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
-    "rpc-client",
+    "mango-v4-client",
+    "rpc-client-wrapper",
     "sysvar-restart-slot-tester",
 ]
