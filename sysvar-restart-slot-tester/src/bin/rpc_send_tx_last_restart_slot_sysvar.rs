@@ -1,41 +1,58 @@
 use std::fs::File;
 use std::path::Path;
 use std::str::FromStr;
+use std::sync::Arc;
 use std::time::Duration;
-use solana_rpc_client::rpc_client::RpcClient;
-use solana_sdk::instruction::{AccountMeta, Instruction};
-use solana_sdk::pubkey::Pubkey;
-use solana_sdk::signature::{Keypair, read_keypair_file, Signer};
-use solana_sdk::sysvar;
-use solana_sdk::transaction::Transaction;
+
 
 fn main() {
-    let rpc_client = RpcClient::new(
-        "http://localhost:8899".to_string(),
-    );
 
-    let payer_keypair = read_keypair_file(Path::new("/Users/stefan/mango/code/solana_configure_local_cluster/validator_1/identity.json")).unwrap();
-    let last_blockhash = rpc_client.get_latest_blockhash().unwrap();
 
-    // note: there are two ways to use sysvar: 1. by explicitly specifying the sysvar account 2. using no account but FooSysvar::get()
-    let _sysvar_account = AccountMeta::new(Pubkey::from_str("SysvarLastRestartS1ot1111111111111111111111").unwrap(), false);
+    // /Users/stefan/mango/solana-wallet/solana-mainnet-stefantest.json
+    // let owner: Arc<Keypair> = Arc::new(keypair_from_cli("/Users/stefan/mango/solana-wallet/solana-mainnet-stefantest.json"));
 
-    let program_id = Pubkey::from_str("3dCHNiByP1xvPQXDSNyhwggdKp15HPbChLnKAcaHPYth").unwrap();
-
-    // sysvar program deployed to local cluster (solana_configure_local_cluster)
-    // /Users/stefan/mango/code/solana-program-library/examples/rust/sysvar
-    let instructions = vec![
-        Instruction::new_with_bincode(program_id, &(), vec![])
-    ];
-
-    let transaction = Transaction::new_signed_with_payer(
-        &instructions,
-        Some(&payer_keypair.pubkey()),
-        &[&payer_keypair],
-        last_blockhash,
-    );
-
-    rpc_client.send_and_confirm_transaction_with_spinner(&transaction).unwrap();
 
 
 }
+
+// fn keypair_from_cli(keypair: &str) -> Keypair {
+//     let maybe_keypair = keypair::read_keypair(&mut keypair.as_bytes());
+//     match maybe_keypair {
+//         Ok(keypair) => keypair,
+//         Err(_) => {
+//             let path = std::path::PathBuf::from_str(keypair).unwrap();
+//             keypair::read_keypair_file(path)
+//                 .unwrap_or_else(|_| panic!("Failed to read keypair from {}", keypair))
+//         }
+//     }
+// }
+
+// #[tokio::main]
+// async fn main() -> Result<(), anyhow::Error> {
+//
+//     let rpc_url = cli.rpc_url;
+//     let ws_url = rpc_url.replace("https", "wss").replace("http", "ws");
+//
+//     // use private key (solana-keygen)
+//     let owner: Arc<Keypair> = Arc::new(keypair_from_cli(cli.owner.as_str()));
+//
+//     let cluster = Cluster::Custom(rpc_url.clone(), ws_url.clone());
+//
+//     let mango_client = Arc::new(
+//         MangoClient::new_for_existing_account(
+//             Client::new(
+//                 cluster,
+//                 // TODO need two (ask Max)
+//                 CommitmentConfig::processed(),
+//                 owner.clone(),
+//                 Some(Duration::from_secs(12)),
+//                 TransactionBuilderConfig {
+//                     prioritization_micro_lamports: Some(1),
+//                 },
+//             ),
+//             cli.mango_account,
+//             owner.clone(),
+//         ).await?);
+//
+//
+// }

@@ -4,14 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-rpc-client-wrapper =  { path = "../rpc-client-wrapper" }
-solana-sdk = { version = "=1.14.19",  git = "https://github.com/blockworks-foundation/solana", tag = "v1.14.19" }
-# renamed to solana-rpc-client
-solana-client = { version = "=1.14.19",  git = "https://github.com/blockworks-foundation/solana", tag = "v1.14.19" }
-
-
-
-
-
-
+mango-v4-client-wrapper = { path = "../mango-v4-client-wrapper" }
 
