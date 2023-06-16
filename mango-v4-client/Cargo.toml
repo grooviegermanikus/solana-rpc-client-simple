@@ -1,5 +1,5 @@
 [package]
-name = "mango-v4-arbi-bot"
+name = "mango-v4-client"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,8 +8,8 @@ name = "arbi-bot"
 path = "src/main.rs"
 
 [dependencies]
-solana-client = "=1.14.17"
-solana-sdk = "=1.14.17"
+solana-client = { version = "=1.14.19",  git = "https://github.com/blockworks-foundation/solana", tag = "v1.14.19" }
+solana-sdk = { version = "=1.14.19",  git = "https://github.com/blockworks-foundation/solana", tag = "v1.14.19" }
 anchor-client = { git = "https://github.com/blockworks-foundation/anchor.git", branch = "v0.27.0-solana-v1.14.19" }
 anchor-lang = { git = "https://github.com/blockworks-foundation/anchor.git", branch = "v0.27.0-solana-v1.14.19" }
 anchor-spl = { git = "https://github.com/blockworks-foundation/anchor.git", branch = "v0.27.0-solana-v1.14.19" }

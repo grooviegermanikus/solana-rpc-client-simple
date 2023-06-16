@@ -5,9 +5,9 @@ edition = "2021"
 
 
 [dependencies]
-solana-rpc = "=1.14.18"
-solana-sdk = "=1.14.18"
-solana-account-decoder = "=1.14.18"
+solana-rpc = { version = "=1.14.19",  git = "https://github.com/blockworks-foundation/solana", tag = "v1.14.19" }
+solana-sdk = { version = "=1.14.19",  git = "https://github.com/blockworks-foundation/solana", tag = "v1.14.19" }
+solana-account-decoder = { version = "=1.14.19",  git = "https://github.com/blockworks-foundation/solana", tag = "v1.14.19" }
 # renamed to solana-rpc-client
 #solana-client = "=1.14.19"
 
