@@ -2837,7 +2837,6 @@ dependencies = [
 [[package]]
 name = "mango-v4-client"
 version = "0.3.0"
-source = "git+https://github.com/blockworks-foundation/mango-v4.git?tag=program-v0.16.0#163f42e9985ffed8016f34cd546af997a0c72a4a"
 dependencies = [
  "anchor-client",
  "anchor-lang",
@@ -2871,15 +2870,6 @@ dependencies = [
  "thiserror",
  "tokio",
  "tokio-stream",
-]
-
-[[package]]
-name = "mango-v4-client-wrapper"
-version = "0.3.0"
-dependencies = [
- "mango-v4",
- "mango-v4-client",
- "solana-sdk",
 ]
 
 [[package]]
@@ -6227,7 +6217,9 @@ dependencies = [
 name = "sysvar-restart-slot-tester"
 version = "0.1.0"
 dependencies = [
- "mango-v4-client-wrapper",
+ "mango-v4-client",
+ "solana-program",
+ "solana-sdk",
 ]
 
 [[package]]

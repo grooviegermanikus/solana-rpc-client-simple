@@ -1,10 +1,17 @@
 [workspace]
 
 members = [
-    "mango-v4-client-wrapper",
+    "mango-v4-client",
     "rpc-client-wrapper",
     "sysvar-restart-slot-tester",
 ]
+
+[workspace.dependencies]
+anchor-client = "0.27.0"
+anchor-lang = "0.27.0"
+anchor-spl = "0.27.0"
+# TODO use this
+#fixed = { git = "https://gitlab.com/ckamm/fixed.git", branch = "v1.11.0-mango", version = "1.11.0" }
 
 [patch.crates-io]
 # for gzip encoded responses

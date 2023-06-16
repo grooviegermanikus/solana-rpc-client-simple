@@ -3,29 +3,30 @@ use std::path::Path;
 use std::str::FromStr;
 use std::sync::Arc;
 use std::time::Duration;
+use solana_sdk::signature::{Keypair, keypair};
 
 
 fn main() {
 
 
     // /Users/stefan/mango/solana-wallet/solana-mainnet-stefantest.json
-    // let owner: Arc<Keypair> = Arc::new(keypair_from_cli("/Users/stefan/mango/solana-wallet/solana-mainnet-stefantest.json"));
+    let owner: Arc<Keypair> = Arc::new(keypair_from_cli("/Users/stefan/mango/solana-wallet/solana-mainnet-stefantest.json"));
 
 
 
 }
 
-// fn keypair_from_cli(keypair: &str) -> Keypair {
-//     let maybe_keypair = keypair::read_keypair(&mut keypair.as_bytes());
-//     match maybe_keypair {
-//         Ok(keypair) => keypair,
-//         Err(_) => {
-//             let path = std::path::PathBuf::from_str(keypair).unwrap();
-//             keypair::read_keypair_file(path)
-//                 .unwrap_or_else(|_| panic!("Failed to read keypair from {}", keypair))
-//         }
-//     }
-// }
+fn keypair_from_cli(keypair: &str) -> Keypair {
+    let maybe_keypair = keypair::read_keypair(&mut keypair.as_bytes());
+    match maybe_keypair {
+        Ok(keypair) => keypair,
+        Err(_) => {
+            let path = std::path::PathBuf::from_str(keypair).unwrap();
+            keypair::read_keypair_file(path)
+                .unwrap_or_else(|_| panic!("Failed to read keypair from {}", keypair))
+        }
+    }
+}
 
 // #[tokio::main]
 // async fn main() -> Result<(), anyhow::Error> {
