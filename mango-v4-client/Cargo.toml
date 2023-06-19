@@ -25,7 +25,7 @@ jsonrpc-core = "18.0.0"
 #jsonrpc-client-transports = "18.0.0"
 jsonrpc-core-client = { version = "18.0.0", features = ["ws", "http", "tls"] }
 pyth-sdk-solana = "0.1.0"
-serum_dex = { git = "https://github.com/openbook-dex/program.git", default-features=false,features = ["no-entrypoint", "program"] }
+serum_dex = { git = "https://github.com/openbook-dex/program.git", tag = "v0.5.10", default-features=false, features = ["no-entrypoint", "program"] }
 shellexpand = "2.1.0"
 solana-account-decoder = "~1.14.9"
 solana-client = "~1.14.9"
