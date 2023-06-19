@@ -9,6 +9,7 @@ use solana_sdk::genesis_config::ClusterType::Devnet;
 use solana_sdk::signature::{Keypair, keypair, Signer};
 use mango_v4_client::{Client, MangoClient, TransactionBuilderConfig};
 use anchor_client::Cluster;
+use solana_program::pubkey::Pubkey;
 
 
 fn keypair_from_cli(keypair: &str) -> Keypair {
@@ -33,7 +34,7 @@ async fn main() -> Result<(), anyhow::Error> {
 
 
     // use private key (solana-keygen)
-    let mango_account: Arc<Keypair> = Arc::new(Keypair::from_base58_string("7v8bovqsYfFfEeiXnGLiGTg2VJAn62hSoSCPidKjKL8w"));
+    let mango_account_pk: Pubkey = Pubkey::from_str("7v8bovqsYfFfEeiXnGLiGTg2VJAn62hSoSCPidKjKL8w").unwrap();
 
     let cluster = Cluster::Custom(rpc_url.clone(), ws_url.clone());
 
@@ -49,7 +50,7 @@ async fn main() -> Result<(), anyhow::Error> {
                     prioritization_micro_lamports: Some(1),
                 },
             ),
-            mango_account.pubkey(),
+            mango_account_pk,
             owner.clone(),
         ).await?);
 
