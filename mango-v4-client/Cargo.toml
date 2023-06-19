@@ -1,3 +1,5 @@
+# copy of mango-v4/lib/client tag program-0.16.0
+
 [package]
 name = "mango-v4-client"
 version = "0.3.0"

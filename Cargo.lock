@@ -6217,9 +6217,12 @@ dependencies = [
 name = "sysvar-restart-slot-tester"
 version = "0.1.0"
 dependencies = [
+ "anchor-client",
+ "anyhow",
  "mango-v4-client",
  "solana-program",
  "solana-sdk",
+ "tokio",
 ]
 
 [[package]]
