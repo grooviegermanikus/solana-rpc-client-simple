@@ -1,5 +1,6 @@
 use std::str::FromStr;
 use bincode::DefaultOptions;
+use solana_client::rpc_client::SerializableTransaction;
 use solana_sdk::bs58;
 use solana_sdk::hash::{Hash, Hasher};
 use solana_sdk::pubkey::Pubkey;
@@ -23,6 +24,8 @@ fn build_tx_and_sign() {
 
     assert_eq!(tx.signatures.len(), 1);
     assert_eq!(tx.is_signed(), true);
+    assert_eq!(tx.get_recent_blockhash().to_string(), "9HMCpfwpRh1TJ2E4NYb1P55tkfR9jQmwXkDBhHdFpudm");
+    assert_eq!(tx.get_signature().to_string(), "hqyiYYBhhoYxKrsaEzEUPPtaLTWALnxvYzijbWQqcXQKaFmFfaZsAPapK3HRoRF7a9Unn7oSXDFnVNDhYqJGFDr");
     assert_eq!(signature_base58_str, "hqyiYYBhhoYxKrsaEzEUPPtaLTWALnxvYzijbWQqcXQKaFmFfaZsAPapK3HRoRF7a9Unn7oSXDFnVNDhYqJGFDr");
 
 }
