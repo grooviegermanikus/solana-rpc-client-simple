@@ -16,10 +16,7 @@ use futures::{stream, StreamExt, TryStreamExt};
 use itertools::Itertools;
 
 use mango_v4::accounts_ix::{Serum3OrderType, Serum3SelfTradeBehavior, Serum3Side};
-use mango_v4::state::{
-    Bank, Group, MangoAccountValue, PerpMarketIndex, PlaceOrderType, SelfTradeBehavior,
-    Serum3MarketIndex, Side, TokenIndex, INSURANCE_TOKEN_INDEX,
-};
+use mango_v4::state::{Bank, Group, MangoAccountValue, PerpMarketIndex, PlaceOrderType, SelfTradeBehavior, Serum3MarketIndex, Side, TokenIndex, INSURANCE_TOKEN_INDEX, MintInfo, PerpMarket};
 
 use solana_address_lookup_table_program::state::AddressLookupTable;
 use solana_client::nonblocking::rpc_client::RpcClient as RpcClientAsync;
@@ -498,6 +495,71 @@ impl MangoClient {
             quote: quote_info,
             base: base_info,
         })
+    }
+
+    pub async fn call_raven(&self,
+                            base_token_name: &str,
+                            quote_token_name: &str,
+                            serum_market_name: &str,
+                            perp_market_name: &str,
+    ) -> anyhow::Result<Signature> {
+
+        let s3 = self.serum3_data_by_market_name(serum_market_name)?;
+
+        let account = self.mango_account().await?;
+        let open_orders = account.serum3_orders(s3.market_index).unwrap().open_orders;
+
+        let open_orders_acc = self.account_fetcher.fetch_raw_account(&open_orders).await?;
+        let open_orders_bytes = open_orders_acc.data();
+        let open_orders_data: &serum_dex::state::OpenOrders = bytemuck::from_bytes(
+            &open_orders_bytes[5..5 + std::mem::size_of::<serum_dex::state::OpenOrders>()],
+        );
+
+        let market_external = self.context.serum3_markets.get(&s3.market_index).unwrap();
+
+        // let market_external_bytes = account
+        //     .load_bytes(&serum_market.serum_market_external)
+        //     .await
+        //     .unwrap();
+        // let market_external: &serum_dex::state::MarketState = bytemuck::from_bytes(
+        //     &market_external_bytes[5..5 + std::mem::size_of::<serum_dex::state::MarketState>()],
+        // );
+
+        // unpack the data, to avoid unaligned references
+        let bids = market_external.bids;
+        let asks = market_external.asks;
+        let event_q = market_external.event_q;
+        let req_q = market_external.req_q;
+        let coin_vault = market_external.coin_vault;
+        let pc_vault = market_external.pc_vault;
+        let vault_signer = market_external.vault_signer;
+        // let vault_signer = serum_dex::state::gen_vault_signer_key(
+        //     market_external.vault_signer_nonce,
+        //     // &serum_market.serum_market_external,
+        //     &serum_market.serum_market_external,
+        //     &serum_market.serum_program,
+        // )
+        //     .unwrap();
+
+        // let group: Group = account_loader.load(&mango_account.fixed.group).await.unwrap();
+
+
+        // let base_mint_info: MintInfo = account_loader.load(&self.base_mint_info).await.unwrap();
+        // let quote_mint_info: MintInfo = account_loader.load(&self.quote_mint_info).await.unwrap();
+        let base_token_index = self.context.token_indexes_by_name.get("SOL").unwrap();
+        let base_mint_info: MintInfo = self.context.mint_info(*base_token_index);
+
+        let quote_token_index = self.context.token_indexes_by_name.get("USDC").unwrap();
+        let quote_mint_info: MintInfo = self.context.mint_info(*quote_token_index);
+
+        let perp_market_index: &PerpMarketIndex = self.context.perp_market_indexes_by_name.get(perp_market_name).unwrap();
+        let perp_market: PerpMarket = self.context.perp(*perp_market_index).market;
+        // let perp_market: PerpMarket = account_loader.load(&self.perp_market).await.unwrap();
+
+
+
+        // TODO
+        Err(anyhow::anyhow!("TODO"))
     }
 
     #[allow(clippy::too_many_arguments)]

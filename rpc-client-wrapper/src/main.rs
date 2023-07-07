@@ -13,7 +13,8 @@ use anchor_client::Cluster;
 use log::*;
 use mango_v4::accounts_zerocopy::{AccountReader, LoadZeroCopy};
 use mango_v4::state::{MangoAccountValue, MintInfo, PerpMarket, Serum3Market};
-use solana_client::nonblocking::nionce_utils::get_account_with_commitment;
+use solana_client::client_error::ClientError;
+use solana_client::nonblocking::nonce_utils::get_account_with_commitment;
 use solana_client::nonblocking::rpc_client::RpcClient;
 use solana_program::{program_option::COption, program_pack::Pack};
 use solana_sdk::commitment_config::CommitmentConfig;
@@ -108,10 +109,20 @@ async fn main() -> anyhow::Result<()> {
         quote_token_bank: token_usdc.mint_info.first_bank(),
     };
 
-
     let solana_cookie = SolanaCookie::new_with_account_fetcher(mango_client.account_fetcher.clone());
 
-    ix.to_instruction(&solana_cookie).await;
+
+
+    mango_client.call_raven(
+        "SOL",
+        "USDC",
+        "SOL/USDC",
+        "MNGO-PERP",
+    ).await;
+
+
+
+    // ix.to_instruction(&solana_cookie).await;
 
 
     // let txsig = mango_client.send_and_confirm_owner_tx(vec![ix]).await;
