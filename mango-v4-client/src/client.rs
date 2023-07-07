@@ -504,7 +504,7 @@ impl MangoClient {
                             perp_market_name: &str,
     ) -> anyhow::Result<Signature> {
 
-        let s3 = self.serum3_data_by_market_name(serum_market_name)?;
+        let s3: Serum3Data = self.serum3_data_by_market_name(serum_market_name)?;
 
         let account = self.mango_account().await?;
         let open_orders = account.serum3_orders(s3.market_index).unwrap().open_orders;
