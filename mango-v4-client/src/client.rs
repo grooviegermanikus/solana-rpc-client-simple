@@ -515,7 +515,15 @@ impl MangoClient {
         let s3: Serum3Data = self.serum3_data_by_market_name(serum_market_name)?;
 
         let mango_account = self.mango_account().await?;
+
+        // mango_account.create_serum3_orders(s3.market_index).unwrap();
+
+        for oo in mango_account.all_serum3_orders() {
+            println!("open_orders: {:?} {}", oo.open_orders, oo.is_active());
+        }
+
         let open_orders = mango_account.serum3_orders(s3.market_index).unwrap().open_orders;
+
 
         // let open_orders_acc = self.account_fetcher.fetch_raw_account(&open_orders).await?;
         // let open_orders_bytes = open_orders_acc.data();
