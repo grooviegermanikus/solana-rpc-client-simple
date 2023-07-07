@@ -6,6 +6,8 @@ edition = "2021"
 
 [dependencies]
 mango-v4-client = { path = "../mango-v4-client" }
+mango-v4 = { tag = "program-v0.16.0", git = "https://github.com/blockworks-foundation/mango-v4.git", features = ["client"] }
+
 anchor-client = "0.27.0"
 anchor-lang = "0.27.0"
 anchor-spl = "0.27.0"

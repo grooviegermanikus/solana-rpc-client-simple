@@ -7,6 +7,7 @@ use anchor_client::{ClientError, Cluster};
 use anchor_lang::__private::bytemuck;
 use anchor_lang::prelude::System;
 use anchor_lang::{AccountDeserialize, Id};
+use anchor_lang::solana_program::instruction;
 use anchor_spl::associated_token::get_associated_token_address;
 use anchor_spl::token::Token;
 
@@ -30,13 +31,13 @@ use solana_sdk::transaction::TransactionError;
 use crate::account_fetcher::*;
 use crate::context::{MangoGroupContext, Serum3MarketContext, TokenContext};
 use crate::gpa::{fetch_anchor_account, fetch_mango_accounts};
-use crate::jupiter;
+use crate::{jupiter, PerpMarketContext};
 
 use anyhow::Context;
 use solana_sdk::account::ReadableAccount;
 use solana_sdk::instruction::{AccountMeta, Instruction};
 use solana_sdk::signature::{Keypair, Signature};
-use solana_sdk::sysvar;
+use solana_sdk::{pubkey, sysvar};
 use solana_sdk::{commitment_config::CommitmentConfig, pubkey::Pubkey, signer::Signer};
 
 // very close to anchor_client::Client, which unfortunately has no accessors or Clone
@@ -497,49 +498,41 @@ impl MangoClient {
         })
     }
 
-    pub async fn call_raven(&self,
+    pub async fn make_raven_instruction(&self,
+                            base_native: u64,
+                            unique_client_order_id: u64,
                             base_token_name: &str,
                             quote_token_name: &str,
                             serum_market_name: &str,
                             perp_market_name: &str,
-    ) -> anyhow::Result<Signature> {
+    ) -> anyhow::Result<Instruction> {
+        println!("make_raven_instruction");
+
+        // TODO check if this is required (ask Max)
+        // let ootx = self.serum3_create_open_orders(serum_market_name).await?;
+        // println!("ootx: {}", ootx);
 
         let s3: Serum3Data = self.serum3_data_by_market_name(serum_market_name)?;
 
-        let account = self.mango_account().await?;
-        let open_orders = account.serum3_orders(s3.market_index).unwrap().open_orders;
+        let mango_account = self.mango_account().await?;
+        let open_orders = mango_account.serum3_orders(s3.market_index).unwrap().open_orders;
 
-        let open_orders_acc = self.account_fetcher.fetch_raw_account(&open_orders).await?;
-        let open_orders_bytes = open_orders_acc.data();
-        let open_orders_data: &serum_dex::state::OpenOrders = bytemuck::from_bytes(
-            &open_orders_bytes[5..5 + std::mem::size_of::<serum_dex::state::OpenOrders>()],
-        );
-
-        let market_external = self.context.serum3_markets.get(&s3.market_index).unwrap();
-
-        // let market_external_bytes = account
-        //     .load_bytes(&serum_market.serum_market_external)
-        //     .await
-        //     .unwrap();
-        // let market_external: &serum_dex::state::MarketState = bytemuck::from_bytes(
-        //     &market_external_bytes[5..5 + std::mem::size_of::<serum_dex::state::MarketState>()],
+        // let open_orders_acc = self.account_fetcher.fetch_raw_account(&open_orders).await?;
+        // let open_orders_bytes = open_orders_acc.data();
+        // let open_orders_data: &serum_dex::state::OpenOrders = bytemuck::from_bytes(
+        //     &open_orders_bytes[5..5 + std::mem::size_of::<serum_dex::state::OpenOrders>()],
         // );
 
+        let serum_market_external = self.context.serum3_markets.get(&s3.market_index).unwrap();
+
         // unpack the data, to avoid unaligned references
-        let bids = market_external.bids;
-        let asks = market_external.asks;
-        let event_q = market_external.event_q;
-        let req_q = market_external.req_q;
-        let coin_vault = market_external.coin_vault;
-        let pc_vault = market_external.pc_vault;
-        let vault_signer = market_external.vault_signer;
-        // let vault_signer = serum_dex::state::gen_vault_signer_key(
-        //     market_external.vault_signer_nonce,
-        //     // &serum_market.serum_market_external,
-        //     &serum_market.serum_market_external,
-        //     &serum_market.serum_program,
-        // )
-        //     .unwrap();
+        let bids = serum_market_external.bids;
+        let asks = serum_market_external.asks;
+        let event_q = serum_market_external.event_q;
+        let req_q = serum_market_external.req_q;
+        let coin_vault = serum_market_external.coin_vault;
+        let pc_vault = serum_market_external.pc_vault;
+        let vault_signer = serum_market_external.vault_signer;
 
         // let group: Group = account_loader.load(&mango_account.fixed.group).await.unwrap();
 
@@ -553,13 +546,52 @@ impl MangoClient {
         let quote_mint_info: MintInfo = self.context.mint_info(*quote_token_index);
 
         let perp_market_index: &PerpMarketIndex = self.context.perp_market_indexes_by_name.get(perp_market_name).unwrap();
-        let perp_market: PerpMarket = self.context.perp(*perp_market_index).market;
+        let perp_market: &PerpMarketContext = self.context.perp(*perp_market_index);
         // let perp_market: PerpMarket = account_loader.load(&self.perp_market).await.unwrap();
 
 
+        assert_eq!(serum_market_external.market.serum_program, OPENBOOK_PROGRAM_ID);
 
-        // TODO
-        Err(anyhow::anyhow!("TODO"))
+        let program_id = raven::id();
+        let instruction = raven::instruction::TradeOpenbook {
+            base_native: base_native,
+            unique_client_order_id: unique_client_order_id,
+        };
+
+        let accounts = raven::accounts::TradeOpenbook {
+            owner: self.owner.pubkey(),
+            account: self.mango_account_address,
+            perp_market: perp_market.address,
+            base_mint_info: base_mint_info.mint, // TODO is that correct?
+            bids: perp_market.market.bids,
+            asks: perp_market.market.asks,
+            base_oracle: base_mint_info.oracle,
+            quote_oracle: quote_mint_info.oracle,
+            group: mango_account.fixed.group,
+            mango_program: mango_v4::id(),
+            event_queue: perp_market.market.event_queue,
+            open_orders: open_orders,
+            base_vault: base_mint_info.first_vault(),
+            quote_vault: quote_mint_info.first_vault(),
+            serum_market: serum_market_external.address,
+            serum_market_external: serum_market_external.address,
+            market_bids: bids,
+            market_asks: asks,
+            market_event_queue: event_q,
+            market_request_queue: req_q,
+            market_base_vault: coin_vault,
+            market_quote_vault: pc_vault,
+            market_vault_signer: vault_signer,
+            base_bank: base_mint_info.first_bank(),
+            quote_bank: quote_mint_info.first_bank(),
+            openbook_program: serum_market_external.market.serum_program,
+            token_program: Token::id(),
+        };
+
+        let instruction = make_instruction(program_id, &accounts, &instruction);
+
+
+        Ok(instruction)
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -1873,4 +1905,23 @@ fn to_writable_account_meta(pubkey: Pubkey) -> AccountMeta {
         is_writable: true,
         is_signer: false,
     }
+}
+
+pub const OPENBOOK_PROGRAM_ID: Pubkey = pubkey!("srmqPvymJeFKQ4zGQed1GFppgkRHL9kaELCbyksJtPX");
+
+fn make_instruction(
+    program_id: Pubkey,
+    accounts: &impl anchor_lang::ToAccountMetas,
+    data: &impl anchor_lang::InstructionData,
+) -> instruction::Instruction {
+    instruction::Instruction {
+        program_id,
+        accounts: anchor_lang::ToAccountMetas::to_account_metas(accounts, None),
+        data: anchor_lang::InstructionData::data(data),
+    }
+}
+
+fn from_serum_style_pubkey(d: [u64; 4]) -> Pubkey {
+    let b: [u8; 32] = bytemuck::cast(d);
+    Pubkey::from(b)
 }

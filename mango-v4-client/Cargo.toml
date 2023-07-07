@@ -9,6 +9,7 @@ edition = "2021"
 doctest = false
 
 [dependencies]
+raven = { path = "../../raven/programs/raven" }
 mango-v4 = { tag = "program-v0.16.0", git = "https://github.com/blockworks-foundation/mango-v4.git", features = ["client"] }
 anchor-client = "0.27.0"
 anchor-lang = "0.27.0"

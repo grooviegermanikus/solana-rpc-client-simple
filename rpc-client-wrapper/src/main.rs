@@ -7,7 +7,7 @@ use std::cell::RefCell;
 use std::{sync::Arc, sync::RwLock};
 use std::ops::Deref;
 use std::str::FromStr;
-use std::time::Duration;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use anchor_client::Cluster;
 
 use log::*;
@@ -78,6 +78,11 @@ async fn main() -> anyhow::Result<()> {
         .get("SOL/USDC")
         .unwrap();
 
+    for s3 in &mango_group_context.serum3_markets {
+        println!("- serum3 market: {:?}", s3.1.market.name);
+        println!("- serum3 market idx: {:?}", s3.1.market.market_index);
+    }
+
     let serum3_info = mango_group_context.serum3_markets.get(&spot_market_index).unwrap();
     println!("serum3_info: {:?}", serum3_info.market);
 
@@ -112,21 +117,24 @@ async fn main() -> anyhow::Result<()> {
     let solana_cookie = SolanaCookie::new_with_account_fetcher(mango_client.account_fetcher.clone());
 
 
+    let account = mango_client.mango_account().await?;
+    let account_fetcher = mango_client.account_fetcher.clone();
 
-    mango_client.call_raven(
+
+    let unique_client_order_id = get_epoch_micros();
+    let ix = mango_client.make_raven_instruction(
+        400_000_000, // .4 SOL
+        unique_client_order_id,
         "SOL",
         "USDC",
         "SOL/USDC",
         "MNGO-PERP",
-    ).await;
+    ).await?;
 
 
 
-    // ix.to_instruction(&solana_cookie).await;
-
-
-    // let txsig = mango_client.send_and_confirm_owner_tx(vec![ix]).await;
-    // println!("txsig: {:?}", txsig);
+    let txsig = mango_client.send_and_confirm_owner_tx(vec![ix]).await;
+    println!("txsig: {:?}", txsig);
 
     Ok(())
 }
@@ -154,45 +162,6 @@ pub struct TradeOpenbookInstruction {
 impl TradeOpenbookInstruction {
 
     async fn to_instruction(&self, account_loader: impl ClientAccountLoader) {
-
-        let mango_account = account_loader
-            .load_mango_account(&self.account)
-            .await
-            .unwrap();
-
-        let serum_market: Serum3Market = account_loader.load(&self.serum_market).await.unwrap();
-        let open_orders = mango_account
-            .serum3_orders(serum_market.market_index)
-            .unwrap()
-            .open_orders;
-
-        let market_external_bytes = account_loader
-            .load_bytes(&serum_market.serum_market_external)
-            .await
-            .unwrap();
-        let market_external: &serum_dex::state::MarketState = bytemuck::from_bytes(
-            &market_external_bytes[5..5 + std::mem::size_of::<serum_dex::state::MarketState>()],
-        );
-        // unpack the data, to avoid unaligned references
-        let bids = market_external.bids;
-        let asks = market_external.asks;
-        let event_q = market_external.event_q;
-        let req_q = market_external.req_q;
-        let coin_vault = market_external.coin_vault;
-        let pc_vault = market_external.pc_vault;
-        let vault_signer = serum_dex::state::gen_vault_signer_key(
-            market_external.vault_signer_nonce,
-            &serum_market.serum_market_external,
-            &serum_market.serum_program,
-        )
-            .unwrap();
-
-        // let group: Group = account_loader.load(&mango_account.fixed.group).await.unwrap();
-
-        let base_mint_info: MintInfo = account_loader.load(&self.base_mint_info).await.unwrap();
-        let quote_mint_info: MintInfo = account_loader.load(&self.quote_mint_info).await.unwrap();
-
-        let perp_market: PerpMarket = account_loader.load(&self.perp_market).await.unwrap();
 
 
 
@@ -247,3 +216,12 @@ impl ClientAccountLoader for &SolanaCookie {
         self.get_account_data(*pubkey).await
     }
 }
+
+
+fn get_epoch_micros() -> u64 {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_micros() as u64
+}
+
