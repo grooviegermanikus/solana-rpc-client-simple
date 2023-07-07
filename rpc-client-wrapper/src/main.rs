@@ -30,14 +30,28 @@ pub const MINT_ADDRESS_ETH: &str = "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
 
-    let rpc_url: String = "https://api.devnet.solana.com/".to_string();
+    // devnet
+    let (rpc_url, owner, owner2, mango_account_pk) = {
+        (
+            "https://api.devnet.solana.com/".to_string(),
+            Arc::new(keypair_from_cli("/Users/stefan/mango/solana-wallet/stefandev-devnet-keypair.json")),
+            keypair_from_cli("/Users/stefan/mango/solana-wallet/stefandev-devnet-keypair.json"),
+            Pubkey::from_str("5GHWjcYosrfPgfY3dS1itaWxSBs3veLtL4VMxj1EBLT5").unwrap(),
+        )
+    };
+
+    // mainnet
+    // let (rpc_url, owner, owner2, mango_account_pk) = {
+    //     (
+    //         "https://api.mainnet-beta.solana.com/".to_string(),
+    //         Arc::new(keypair_from_cli("/Users/stefan/mango/solana-wallet/solana-mainnet-stefantest.json")),
+    //         keypair_from_cli("/Users/stefan/mango/solana-wallet/solana-mainnet-stefantest.json"),
+    //         Pubkey::from_str("7v8bovqsYfFfEeiXnGLiGTg2VJAn62hSoSCPidKjKL8w").unwrap(),
+    //     )
+    // };
+
+
     let ws_url = rpc_url.replace("https", "wss").replace("http", "ws");
-
-    let owner: Arc<Keypair> = Arc::new(keypair_from_cli("/Users/stefan/mango/solana-wallet/stefandev-devnet-keypair.json"));
-    let owner2: Keypair = keypair_from_cli("/Users/stefan/mango/solana-wallet/stefandev-devnet-keypair.json");
-
-    // Note: devnet / ckamm
-    let mango_account_pk: Pubkey = Pubkey::from_str("5GHWjcYosrfPgfY3dS1itaWxSBs3veLtL4VMxj1EBLT5").unwrap();
 
     // group Czdh6uGt9x7EW7TAvN7ZwheSwYjiv29z6VD4yavkmHqe
     let cluster = Cluster::Custom(rpc_url.clone(), ws_url.clone());

@@ -6,7 +6,7 @@ edition = "2021"
 
 [dependencies]
 mango-v4-client = { path = "../mango-v4-client" }
-mango-v4 = { tag = "program-v0.16.0", git = "https://github.com/blockworks-foundation/mango-v4.git", features = ["client"] }
+mango-v4 = { ref = "5a70917a9", git = "https://github.com/blockworks-foundation/mango-v4.git", features = ["client"] }
 
 anchor-client = "0.27.0"
 anchor-lang = "0.27.0"
@@ -16,7 +16,7 @@ async-channel = "1.6"
 async-once-cell = { version = "0.4.2", features = ["unpin"] }
 async-trait = "0.1.52"
 #fixed = { path = "../../3rdparty/fixed", version = "1.11.0", features = ["serde", "borsh"] }
-fixed = { git = "https://github.com/blockworks-foundation/mango-v4.git", tag = "program-v0.16.0" }
+fixed = { git = "https://github.com/blockworks-foundation/mango-v4.git", ref = "5a70917a9" }
 futures = "0.3.25"
 itertools = "0.10.3"
 jsonrpc-core = "18.0.0"

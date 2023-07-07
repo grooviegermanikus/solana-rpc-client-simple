@@ -335,7 +335,7 @@ dependencies = [
  "num-traits",
  "rusticata-macros",
  "thiserror",
- "time 0.3.17",
+ "time 0.3.19",
 ]
 
 [[package]]
@@ -1688,7 +1688,20 @@ dependencies = [
 [[package]]
 name = "fixed"
 version = "1.11.0"
-source = "git+https://github.com/blockworks-foundation/mango-v4.git?tag=program-v0.16.0#163f42e9985ffed8016f34cd546af997a0c72a4a"
+source = "git+https://github.com/blockworks-foundation/mango-v4?tag=program-v0.16.0#163f42e9985ffed8016f34cd546af997a0c72a4a"
+dependencies = [
+ "az",
+ "borsh",
+ "bytemuck",
+ "half",
+ "serde",
+ "typenum",
+]
+
+[[package]]
+name = "fixed"
+version = "1.11.0"
+source = "git+https://github.com/blockworks-foundation/mango-v4.git#ff55a7910c4942633c69ef36b18f9718ba9c67fd"
 dependencies = [
  "az",
  "borsh",
@@ -1978,7 +1991,7 @@ dependencies = [
  "serde_json",
  "simpl",
  "smpl_jwt",
- "time 0.3.17",
+ "time 0.3.19",
  "tokio",
 ]
 
@@ -2092,6 +2105,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "62b467343b94ba476dcb2500d242dadbb39557df889310ac77c5d99100aaac33"
 dependencies = [
  "libc",
+]
+
+[[package]]
+name = "hex"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
+dependencies = [
+ "serde",
 ]
 
 [[package]]
@@ -2617,9 +2639,9 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "libc"
-version = "0.2.138"
+version = "0.2.147"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db6d7e329c562c5dfab7a46a2afabc8b987ab9a4834c9d1ca04dc54c1546cef8"
+checksum = "b4668fb0ea861c1df094127ac5f1da3409a82116a4ba74fca2e58ef927159bb3"
 
 [[package]]
 name = "libloading"
@@ -2819,7 +2841,7 @@ dependencies = [
 [[package]]
 name = "mango-v4"
 version = "0.16.0"
-source = "git+https://github.com/blockworks-foundation/mango-v4.git?tag=program-v0.16.0#163f42e9985ffed8016f34cd546af997a0c72a4a"
+source = "git+https://github.com/blockworks-foundation/mango-v4?tag=program-v0.16.0#163f42e9985ffed8016f34cd546af997a0c72a4a"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
@@ -2829,9 +2851,35 @@ dependencies = [
  "bytemuck",
  "default-env",
  "derivative",
- "fixed",
+ "fixed 1.11.0 (git+https://github.com/blockworks-foundation/mango-v4?tag=program-v0.16.0)",
  "num_enum",
- "pyth-sdk-solana",
+ "pyth-sdk-solana 0.1.0",
+ "serde",
+ "serum_dex 0.5.10 (git+https://github.com/openbook-dex/program.git)",
+ "solana-address-lookup-table-program",
+ "solana-program",
+ "solana-security-txt",
+ "static_assertions",
+ "switchboard-program",
+ "switchboard-v2",
+]
+
+[[package]]
+name = "mango-v4"
+version = "0.18.0"
+source = "git+https://github.com/blockworks-foundation/mango-v4.git#ff55a7910c4942633c69ef36b18f9718ba9c67fd"
+dependencies = [
+ "anchor-lang",
+ "anchor-spl",
+ "arrayref",
+ "bincode",
+ "borsh",
+ "bytemuck",
+ "default-env",
+ "derivative",
+ "fixed 1.11.0 (git+https://github.com/blockworks-foundation/mango-v4.git)",
+ "num_enum",
+ "pyth-sdk-solana 0.7.2",
  "serde",
  "serum_dex 0.5.10 (git+https://github.com/openbook-dex/program.git)",
  "solana-address-lookup-table-program",
@@ -2856,15 +2904,16 @@ dependencies = [
  "async-trait",
  "base64 0.13.1",
  "bincode",
- "fixed",
+ "fixed 1.11.0 (git+https://github.com/blockworks-foundation/mango-v4.git)",
  "futures 0.3.25",
  "itertools 0.10.5",
  "jsonrpc-core 18.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "jsonrpc-core-client",
  "log 0.4.17",
  "mango-feeds-connector",
- "mango-v4",
- "pyth-sdk-solana",
+ "mango-v4 0.18.0",
+ "pyth-sdk-solana 0.1.0",
+ "raven",
  "reqwest",
  "serde",
  "serde_json",
@@ -2876,6 +2925,7 @@ dependencies = [
  "solana-rpc",
  "solana-sdk",
  "spl-associated-token-account",
+ "spl-memo",
  "thiserror",
  "tokio",
  "tokio-stream",
@@ -3769,6 +3819,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "pyth-sdk"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "00bf2540203ca3c7a5712fdb8b5897534b7f6a0b6e7b0923ff00466c5f9efcb3"
+dependencies = [
+ "borsh",
+ "borsh-derive",
+ "hex",
+ "schemars",
+ "serde",
+]
+
+[[package]]
 name = "pyth-sdk-solana"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3779,7 +3842,24 @@ dependencies = [
  "bytemuck",
  "num-derive",
  "num-traits",
- "pyth-sdk",
+ "pyth-sdk 0.1.0",
+ "serde",
+ "solana-program",
+ "thiserror",
+]
+
+[[package]]
+name = "pyth-sdk-solana"
+version = "0.7.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e1fcd2dcd063ea85004667cf5cb07f30de7387f17249df988a295e764a47b9f5"
+dependencies = [
+ "borsh",
+ "borsh-derive",
+ "bytemuck",
+ "num-derive",
+ "num-traits",
+ "pyth-sdk 0.7.0",
  "serde",
  "solana-program",
  "thiserror",
@@ -4067,6 +4147,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "raven"
+version = "0.1.0"
+dependencies = [
+ "anchor-lang",
+ "anchor-spl",
+ "libc",
+ "mango-v4 0.16.0",
+ "rustc_version 0.4.0",
+ "serum_dex 0.5.10 (git+https://github.com/openbook-dex/program.git?tag=v0.5.10)",
+ "solana-program",
+ "time 0.3.19",
+ "winnow",
+]
+
+[[package]]
 name = "rayon"
 version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4096,7 +4191,7 @@ checksum = "6413f3de1edee53342e6138e75b56d32e7bc6e332b3bd62d497b1929d4cfbcdd"
 dependencies = [
  "pem",
  "ring",
- "time 0.3.17",
+ "time 0.3.19",
  "yasna",
 ]
 
@@ -4260,6 +4355,44 @@ dependencies = [
 [[package]]
 name = "rpc-client-wrapper"
 version = "0.1.0"
+dependencies = [
+ "anchor-client",
+ "anchor-lang",
+ "anchor-spl",
+ "anyhow",
+ "async-channel",
+ "async-once-cell",
+ "async-trait",
+ "base64 0.13.1",
+ "bincode",
+ "bytemuck",
+ "fixed 1.11.0 (git+https://github.com/blockworks-foundation/mango-v4.git)",
+ "futures 0.3.25",
+ "itertools 0.10.5",
+ "jsonrpc-core 18.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "jsonrpc-core-client",
+ "log 0.4.17",
+ "mango-feeds-connector",
+ "mango-v4 0.18.0",
+ "mango-v4-client",
+ "pyth-sdk-solana 0.1.0",
+ "raven",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "serum_dex 0.5.10 (git+https://github.com/openbook-dex/program.git?tag=v0.5.10)",
+ "shellexpand",
+ "solana-account-decoder",
+ "solana-address-lookup-table-program",
+ "solana-client",
+ "solana-program",
+ "solana-rpc",
+ "solana-sdk",
+ "spl-associated-token-account",
+ "thiserror",
+ "tokio",
+ "tokio-stream",
+]
 
 [[package]]
 name = "rust_decimal"
@@ -4852,7 +4985,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "simpl",
- "time 0.3.17",
+ "time 0.3.19",
 ]
 
 [[package]]
@@ -6352,9 +6485,9 @@ dependencies = [
 
 [[package]]
 name = "time"
-version = "0.3.17"
+version = "0.3.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a561bf4617eebd33bca6434b988f39ed798e527f51a1e797d0ee4f61c0a38376"
+checksum = "53250a3b3fed8ff8fd988587d8925d26a83ac3845d9e03b220b37f34c2b8d6c2"
 dependencies = [
  "itoa",
  "serde",
@@ -6370,9 +6503,9 @@ checksum = "2e153e1f1acaef8acc537e68b44906d2db6436e2b35ac2c6b42640fff91f00fd"
 
 [[package]]
 name = "time-macros"
-version = "0.2.6"
+version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d967f99f534ca7e495c575c62638eebc2898a8c84c119b89e250477bc4ba16b2"
+checksum = "a460aeb8de6dcb0f381e1ee05f1cd56fcf5a5f6eb8187ff3d8f0b11078d38b7c"
 dependencies = [
  "time-core",
 ]
@@ -7377,6 +7510,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f40009d85759725a34da6d89a94e63d7bdc50a862acf0dbc7c8e488f1edcb6f5"
 
 [[package]]
+name = "winnow"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ae8970b36c66498d8ff1d66685dc86b91b29db0c7739899012f63a63814b4b28"
+dependencies = [
+ "memchr",
+]
+
+[[package]]
 name = "winreg"
 version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -7420,7 +7562,7 @@ dependencies = [
  "oid-registry",
  "rusticata-macros",
  "thiserror",
- "time 0.3.17",
+ "time 0.3.19",
 ]
 
 [[package]]
@@ -7447,7 +7589,7 @@ version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "346d34a236c9d3e5f3b9b74563f238f955bbd05fa0b8b4efa53c130c43982f4c"
 dependencies = [
- "time 0.3.17",
+ "time 0.3.19",
 ]
 
 [[package]]
