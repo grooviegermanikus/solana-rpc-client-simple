@@ -9,6 +9,7 @@ use std::ops::Deref;
 use std::str::FromStr;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use anchor_client::Cluster;
+use clap::Parser;
 
 use log::*;
 use mango_v4::accounts_zerocopy::{AccountReader, LoadZeroCopy};
@@ -26,18 +27,39 @@ pub const MINT_ADDRESS_USDC: &str = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1
 pub const MINT_ADDRESS_SOL: &str = "So11111111111111111111111111111111111111112";
 pub const MINT_ADDRESS_ETH: &str = "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs";
 
+#[derive(Parser, Debug, Clone)]
+#[clap()]
+struct Cli {
+    // e.g. https://mango.devnet.rpcpool.com
+    #[clap(short, long, env)]
+    rpc_url: String,
+
+    // from app mango -> "Accounts"
+    #[clap(short, long, env)]
+    mango_account: Pubkey,
+
+    // path to json array with private key
+    #[clap(short, long, env)]
+    owner: String,
+}
+
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
 
-    let rpc_url: String = "https://api.devnet.solana.com/".to_string();
+    let cli = Cli::parse_from(std::env::args_os());
+
+    // --rpc-url https://api.devnet.solana.com/ --mango-account 5GHWjcYosrfPgfY3dS1itaWxSBs3veLtL4VMxj1EBLT5 --owner /Users/stefan/mango/solana-wallet/stefandev-devnet-keypair.json
+
+    // --rpc-url http://mango.rpcpool.com/<token> --mango-account 7v8bovqsYfFfEeiXnGLiGTg2VJAn62hSoSCPidKjKL8w --owner /Users/stefan/mango/solana-wallet/solana-mainnet-stefantest.json
+
+
+    let rpc_url = cli.rpc_url;
+    let owner = Arc::new(keypair_from_cli(&cli.owner));
+    let owner2 = keypair_from_cli(&cli.owner);
+    let mango_account_pk = cli.mango_account;
+
     let ws_url = rpc_url.replace("https", "wss").replace("http", "ws");
-
-    let owner: Arc<Keypair> = Arc::new(keypair_from_cli("/Users/stefan/mango/solana-wallet/stefandev-devnet-keypair.json"));
-    let owner2: Keypair = keypair_from_cli("/Users/stefan/mango/solana-wallet/stefandev-devnet-keypair.json");
-
-    // Note: devnet / ckamm
-    let mango_account_pk: Pubkey = Pubkey::from_str("5GHWjcYosrfPgfY3dS1itaWxSBs3veLtL4VMxj1EBLT5").unwrap();
 
     // group Czdh6uGt9x7EW7TAvN7ZwheSwYjiv29z6VD4yavkmHqe
     let cluster = Cluster::Custom(rpc_url.clone(), ws_url.clone());
