@@ -85,14 +85,13 @@ async fn main() -> anyhow::Result<()> {
     let mango_group_context = &mango_client.context;
 
 
-    assert_eq!(mango_group_context.group.key(), Pubkey::from_str("Czdh6uGt9x7EW7TAvN7ZwheSwYjiv29z6VD4yavkmHqe").unwrap());
+    println!("mango group: {:?}", mango_group_context.group.key());
 
     for asdsdf in &mango_group_context.perp_market_indexes_by_name {
         println!("- perp market: {:?}", asdsdf);
     }
 
-    // FIXME should be SOL-PERP
-    let perp_market_index = mango_group_context.perp_market_indexes_by_name.get("MNGO-PERP").unwrap();
+    let perp_market_index = mango_group_context.perp_market_indexes_by_name.get("SOL-PERP").unwrap();
     let perp_market = mango_group_context.perp(*perp_market_index);
 
     let spot_market_index = mango_group_context
@@ -150,7 +149,7 @@ async fn main() -> anyhow::Result<()> {
         "SOL",
         "USDC",
         "SOL/USDC",
-        "MNGO-PERP",
+        "SOL-PERP",
     ).await?;
 
 
