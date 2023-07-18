@@ -1,0 +1,14 @@
+[package]
+name = "history-api-tester"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+solana-sdk = "~1.14.9"
+solana-program = "~1.14.16"
+solana-client = "~1.14.9"
+#solana-rpc-client = "~1.16.1"
+tokio = { version = "1", features = ["full"] }
+anyhow = "1.0"
+
+

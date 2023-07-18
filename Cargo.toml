@@ -4,6 +4,7 @@ members = [
     "mango-v4-client",
     "rpc-client-wrapper",
     "sysvar-restart-slot-tester",
+    "history-api-tester",
 ]
 
 [workspace.dependencies]
